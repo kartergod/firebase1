@@ -1,70 +1,28 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Мой облачный проект</title>
-
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            padding: 50px;
-            background-color: #f4f4f9;
-        }
-
-        .form-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 300px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #f4b400;
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background: #dfa400;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Login / Register</title>
 </head>
-
 <body>
 
-<div class="form-container">
-    <h3>Отправить заявку</h3>
+<h2>Регистрация</h2>
+<input type="email" id="regEmail" placeholder="Email">
+<input type="password" id="regPassword" placeholder="Пароль">
+<button onclick="register()">Зарегистрироваться</button>
 
-    <form id="feedbackForm">
-        <input type="text" id="userName" placeholder="Ваше имя" required>
-        <input type="email" id="userEmail" placeholder="Ваш Email" required>
-        <button type="submit">Отправить в облако</button>
-    </form>
-</div>
+<h2>Логин</h2>
+<input type="email" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPassword" placeholder="Пароль">
+<button onclick="login()">Войти</button>
+
+<p id="message"></p>
 
 <script type="module">
-    // Импорт Firebase
-    import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
-    const firebaseConfig = {
+ const firebaseConfig = {
   apiKey: "AIzaSyDPpmSHLgZkGMi3eoQLJBEhfZTwLCAOd5o",
   authDomain: "po234-e491b.firebaseapp.com",
   projectId: "po234-e491b",
@@ -74,34 +32,34 @@
   measurementId: "G-0TR0C7Q0Z9"
 };
 
-    // Инициализация Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-    // Обработчик формы
-    const form = document.getElementById("feedbackForm");
+  window.register = function() {
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        document.getElementById("message").innerText = "Регистрация успешна!";
+      })
+      .catch((error) => {
+        document.getElementById("message").innerText = error.message;
+      });
+  }
 
-        const nameInput = document.getElementById("userName").value;
-        const emailInput = document.getElementById("userEmail").value;
+  window.login = function() {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-        try {
-            await addDoc(collection(db, "requests"), {
-                name: nameInput,
-                email: emailInput,
-                timestamp: new Date()
-            });
-
-            alert("Готово! Данные сохранены в Firebase.");
-            form.reset();
-
-        } catch (error) {
-            console.error("Ошибка записи:", error);
-            alert("Ошибка при отправке.");
-        }
-    });
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        document.getElementById("message").innerText = "Вход выполнен!";
+      })
+      .catch((error) => {
+        document.getElementById("message").innerText = error.message;
+      });
+  }
 </script>
 
 </body>
